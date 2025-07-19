@@ -1,120 +1,124 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Practice & Imitation | LLB</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>بخش‌های کاربردی یادگیری زبان</title>
   <style>
     body {
+      font-family: 'Vazirmatn', sans-serif;
+      background-color: #fefefe;
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f5f5f5;
-      color: #05344E;
+      padding: 2rem;
+      color: #222;
     }
 
-    header {
-      background-color: #05344E;
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 20px;
-    }
-
-    .site-title {
-      font-size: 20px;
-      font-weight: 600;
-    }
-
-    .menu-icon {
-      cursor: pointer;
-      display: block;
-    }
-
-    .bar {
-      width: 25px;
-      height: 3px;
-      background-color: white;
-      margin: 4px 0;
-      transition: 0.4s;
-    }
-
-    .nav-menu {
-      display: none;
-      flex-direction: column;
-      background-color: #05344E;
-      position: absolute;
-      top: 60px;
-      right: 20px;
-      width: 200px;
-      border-radius: 8px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
-
-    .nav-menu a {
-      padding: 12px 16px;
-      color: white;
-      text-decoration: none;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      transition: background 0.2s;
-    }
-
-    .nav-menu a:hover {
-      background-color: rgba(255,255,255,0.1);
-    }
-
-    .show {
-      display: flex;
-    }
-
-    main {
-      padding: 30px 20px;
+    .section {
       max-width: 700px;
-      margin: auto;
+      margin: 0 auto;
+      padding: 1.5rem;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+      animation: fadeInUp 1s ease forwards;
+      opacity: 0;
+      transform: translateY(30px);
     }
 
-    h1 {
-      color: #05344E;
-      font-size: 28px;
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    p {
-      line-height: 1.7;
+    h2 {
+      color: #0066aa;
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .level {
+      margin: 0.75rem 0;
+      padding: 1rem;
+      border-right: 4px solid #0099cc;
+      background-color: #f9f9f9;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .level:hover {
+      background-color: #eefaff;
+    }
+
+    .level span {
+      display: block;
+      font-weight: bold;
+      color: #444;
+      margin-bottom: 0.4rem;
+    }
+
+    .level small {
+      color: #777;
+      display: none;
+    }
+
+    .level.active small {
+      display: block;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="site-title">Practice & Imitation (PI)</div>
-    <div class="menu-icon" onclick="toggleMenu()">
-      <div class="bar"></div>
-      <div class="bar"></div>
-      <div class="bar"></div>
-    </div>
-    <nav class="nav-menu" id="navMenu">
-      <a href="https://example.com/reading" target="_blank">Reading Practice</a>
-      <a href="https://example.com/speaking" target="_blank">Speaking Imitation</a>
-      <a href="https://example.com/listening" target="_blank">Listening Practice</a>
-      <a href="https://example.com/record" target="_blank">Voice Recording</a>
-      <a href="https://example.com/video" target="_blank">Video Shadowing</a>
-    </nav>
-  </header>
 
-  <main>
-    <h1>Welcome to Practice & Imitation</h1>
-    <p>
-      This section is your smart and adaptive space to train your speaking, listening,
-      and shadowing skills. Start from anywhere, practice regularly, and build confidence.
-    </p>
-    <p>
-      Use the menu above to access useful external tools and exercises.
-    </p>
-  </main>
+  <div class="section">
+    <h2>۲. بخش‌های کاربردی برای یادگیری زبان</h2>
+
+    <div class="level">
+      <span>🥚 پایه — واژه‌های ضروری</span>
+      <small>مثال: سلام، گرسنه‌ام، بده، بگیر</small>
+      <small>روش طبیعی: تقلید و استفاده در بازی</small>
+    </div>
+
+    <div class="level">
+      <span>🐣 پایه+ — جمله‌های کوتاه</span>
+      <small>مثال: من آب می‌خوام</small>
+      <small>روش طبیعی: تکرار با صدا</small>
+    </div>
+
+    <div class="level">
+      <span>🐥 میان — کنش‌ها و واکنش‌ها</span>
+      <small>مثال: داری چیکار می‌کنی؟ / من دارم می‌خندم</small>
+      <small>روش طبیعی: دیدن در فیلم‌ها یا مکالمه‌ها</small>
+    </div>
+
+    <div class="level">
+      <span>🐤 میان+ — نیازهای روزمره</span>
+      <small>مثال: بریم بیرون؟ / چقدر گرونه!</small>
+      <small>روش طبیعی: نقش‌بازی، خیال‌پردازی</small>
+    </div>
+
+    <div class="level">
+      <span>🦜 پیشرفته — احساسات، توصیف‌ها</span>
+      <small>مثال: من یه کم ناراحتم / خیلی قشنگه</small>
+      <small>روش طبیعی: نوشتن خاطره، صحبت درونی</small>
+    </div>
+
+    <div class="level">
+      <span>🕊️ خلاق — خیال، شعر، داستان</span>
+      <small>مثال: یه روز یه گربه اومد...</small>
+      <small>روش طبیعی: بازی با کلمات، نوشتن آزاد</small>
+    </div>
+  </div>
 
   <script>
-    function toggleMenu() {
-      document.getElementById("navMenu").classList.toggle("show");
-    }
+    const levels = document.querySelectorAll('.level');
+    levels.forEach(level => {
+      level.addEventListener('click', () => {
+        level.classList.toggle('active');
+      });
+    });
   </script>
+
 </body>
 </html>
