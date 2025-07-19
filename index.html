@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Language Learning Box — LLB</title>
   <link rel="icon" href="https://cdn.imgurl.ir/uploads/t965657_Polish_20250717_225517445.png" type="image/png" />
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #f7f8fa;
@@ -13,7 +14,7 @@
       --accent: #facc15;
       --card: #ffffff;
       --border: #d0d7df;
-      --shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
     }
 
     * {
@@ -23,7 +24,7 @@
     }
 
     body {
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Vazirmatn', sans-serif;
       background-color: var(--bg);
       color: var(--text);
       padding: 3rem 1rem;
@@ -38,16 +39,16 @@
       width: 100%;
       background-color: var(--card);
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 20px;
       box-shadow: var(--shadow);
-      padding: 2rem;
+      padding: 2.5rem 2rem;
       text-align: center;
     }
 
     .logo {
-      width: 80px;
+      width: 90px;
       height: auto;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
     }
 
     h1 {
@@ -65,19 +66,21 @@
     .menu {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 1.2rem;
       margin-top: 1rem;
     }
 
     .menu a {
       text-decoration: none;
       padding: 1rem 1.5rem;
-      border-radius: 12px;
+      border-radius: 14px;
       background-color: var(--bg);
-      border: 1px solid var(--primary);
+      border: 2px solid var(--primary);
       color: var(--primary);
       font-weight: 600;
-      transition: all 0.2s ease;
+      font-size: 1rem;
+      transition: all 0.25s ease;
+      cursor: pointer;
     }
 
     .menu a:hover {
@@ -87,21 +90,21 @@
 
     .footer {
       text-align: center;
-      margin-top: 2rem;
-      font-size: 0.875rem;
+      margin-top: 2.5rem;
+      font-size: 0.9rem;
       color: #888;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <img src="https://cdn.imgurl.ir/uploads/t965657_Polish_20250717_225517445.png" alt="LLB" class="logo" />
+    <img src="https://cdn.imgurl.ir/uploads/t965657_Polish_20250717_225517445.png" alt="LLB Logo" class="logo" />
     <h1>Language Learning Box</h1>
-    <p class="subtitle">Build your fluency. One step at a time.</p>
+    <p class="subtitle">روشی نو برای یادگیری زبان، مرحله‌به‌مرحله، انسانی، لذت‌بخش</p>
     <div class="menu">
-      <a href="#">🧠 Language Memory Box</a>
-      <a href="#">📖 Practice & Imitation</a>
-      <a href="#">🧩 Essentials & Core Grammar</a>
+      <a onclick="alert('نمایش: شیوه‌ی یادگیری (فلسفه + رویکرد)')">شیوه‌ی یادگیری (فلسفه + رویکرد)</a>
+      <a onclick="alert('نمایش: بخش‌های کاربردی برای یادگیری زبان')">بخش‌های کاربردی برای یادگیری زبان</a>
+      <a onclick="alert('نمایش: ابزارهای پیشنهادی')">ابزارهای پیشنهادی</a>
     </div>
     <div class="footer">
       © 2025 LLB – Designed for independent language learners.
