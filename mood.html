@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>OODBox — Mood Orb (Minimal)</title>
+<style>
+  :root {
+    --bg: #0b0f14;
+    --panel: #0f1720;
+    --muted: #9aa6b2;
+    --accent: #c9a34a; /* warm gold */
+    --accent-2: #6ad3ff; /* cool glow */
+    --glass: rgba(255, 255, 255, 0.03);
+    --font-size-small: 12px;
+    --font-size-medium: 13px;
+    --font-size-large: 20px;
+  }
+  
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; background: linear-gradient(180deg, var(--bg), #07101a); font-family: Inter, ui-sans-serif, system-ui, Segoe UI, Roboto, "Helvetica Neue", Arial; }
+  .wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 28px; }
+  .card {
+    width: 980px; max-width: 98%; background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+    border-radius: 14px; padding: 28px; box-shadow: 0 10px 40px rgba(2, 6, 23, 0.7); border: 1px solid rgba(255, 255, 255, 0.03);
+    display: grid; grid-template-columns: 1fr 360px; gap: 20px;
+  }
+
+  /* Left: Orb area */
+  .orb-area { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 6px; }
+  .title { color: #e6eef6; font-weight: 700; font-size: var(--font-size-large); }
+  .subtitle { color: var(--muted); font-size: var(--font-size-medium); margin-top: -4px; text-align: center; max-width: 360px; }
+  .orb-wrap { position: relative; width: 320px; height: 320px; display: flex; align-items: center; justify-content: center; }
+  .orb {
+    width: 240px; height: 240px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)),
+                linear-gradient(180deg, rgba(106, 211, 255, 0.06), rgba(201, 163, 74, 0.06));
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    box-shadow: 0 8px 36px rgba(106, 211, 255, 0.06), inset 0 6px 30px rgba(0, 0, 0, 0.4);
+    transition: transform .18s ease, box-shadow .18s ease;
+    backdrop-filter: blur(6px);
+  }
+  .orb:active { transform: scale(.98); }
+  .orb-glow {
+    position: absolute; width: 420px; height: 420px; border-radius: 50%;
+    filter: blur(40px); opacity: 0.12;
+    background: radial-gradient(circle at 50% 40%, var(--accent-2), transparent 40%),
+                radial-gradient(circle at 60% 60%, var(--accent), transparent 30%);
+    mix-blend-mode: screen;
+  }
+  .orb-inner {
+    width: 160px; height: 160px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    color: #071a1f; font-weight: 700; font-size: var(--font-size-large);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.94));
+    text-align: center; padding: 8px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  }
+
+  /* feedback badges */
+  .meta-row { display: flex; gap: 12px; align-items: center; margin-top: 6px; }
+  .chip { background: var(--glass); color: var(--muted); padding: 8px 12px; border-radius: 999px; font-size: var(--font-size-medium); border: 1px solid rgba(255, 255, 255, 0.02); }
+  .op { color: var(--accent); font-weight: 700; font-size: 18px; }
+  .streak { color: var(--accent-2); font-weight: 700; }
+
+  /* Right: activity feed */
+  .panel { background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), transparent); padding: 14px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.02); }
+  .panel h3 { color: #eaf1f6; margin: 0 0 8px 0; font-size: 15px; }
+  .actions { display: flex; gap: 8px; margin-bottom: 10px; }
+  .btn { background: transparent; border: 1px solid rgba(255, 255, 255, 0.04); color: var(--muted); padding: 8px 10px; border-radius: 8px; cursor: pointer; font-size: var(--font-size-medium); }
+  .btn.primary { background: linear-gradient(90deg, var(--accent), #f1c074); color: #07101a; border: none; font-weight: 700; }
+  .small { font-size: var(--font-size-small); color: var(--muted); }
+
+  .feed { max-height: 360px; overflow: auto; padding-right: 6px; }
+  .entry { display: flex; justify-content: space-between; gap: 12px; padding: 10px; border-radius: 8px; margin-bottom: 8px; background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.005)); border: 1px solid rgba(255, 255, 255, 0.02); }
+  .entry-left { max-width: 72%; }
+  .entry-date { font-size: var(--font-size-small); color: var(--muted); }
+  .entry-text { color: #eaf1f6; font-weight: 600; }
+  .entry-right { color: var(--muted); text-align: right; font-size: var(--font-size-medium); }
+
+  /* subtle confetti */
+  .confetti-wrap { pointer-events: none; position: absolute; inset: 0; overflow: visible; }
+
+  /* footer */
+  .footer { grid-column: 1 / -1; margin-top: 12px; display: flex; justify-content: space-between; align-items: center; }
+  .hint { color: var(--muted); font-size: var(--font-size-medium); }
+
+  /* modal */
+  .modal-back { position: fixed; inset: 0; background: rgba(2, 6, 11, 0.6); display: flex; align-items: center; justify-content: center; }
+  .modal-card { background: linear-gradient(180deg, #0b1217, #07101a); padding: 18px; border-radius: 12px; width: 420px; border: 1px solid rgba(255, 255, 255, 0.03); }
+  .modal-card input, .modal-card textarea { width: 100%; padding: 10px; margin-top: 8px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.04); background: transparent; color: #eaf1f6; }
+
+  @media (max-width: 880px) {
+    .card { grid-template-columns: 1fr; padding: 18px; }
+    .orb-wrap { width: 100%; height: 260px; }
+    .orb { width: 200px; height: 200px; }
+    .orb-inner { width: 140px; height: 140px; }
+  }
+</style>
+</head>
+<body>
+<main class="wrap" role="main">
+  <article class="card" role="application" aria-label="OODBox Mood Orb">
+    <div class="orb-area">
+      <div style="text-align:center">
+        <div class="title">OODBox — Mood Orb</div>
+        <div class="subtitle">One click. One real outcome. Immediate return. No bureaucracy.</div>
+      </div>
+
+      <div class="orb-wrap" id="orbWrap">
+        <div class="orb-glow" id="orbGlow"></div>
+        <div class="orb" id="orbButton" title="Click to capture today's outcome">
+          <div class="orb-inner" id="orbInner">TAP</div>
+        </div>
+        <div class="confetti-wrap" id="confettiWrap"></div>
+      </div>
+
+      <div class="meta-row">
+        <div class="chip">OP: <span class="op" id="opCount">0</span></div>
+        <div class="chip">Streak: <span class="streak" id="streakCount">0</span> days</div>
+        <div class="chip small" id="levelBadge">Rank: Initiate</div>
+        <div class="chip">امتیاز کلی: <span class="totalScore" id="totalScore">0</span></div> <!-- نمایش امتیاز کلی -->
+      </div>
+
+      <div style="margin-top:8px; text-align:center">
+        <div class="hint">Quick mode: click orb → auto-save a concise outcome. Hold to edit details.</div>
+      </div>
+    </div>
+
+    <div class="panel" aria-live="polite">
+      <h3>Recent Outcomes</h3>
+      <div class="actions">
+        <button class="btn" id="btnQuick">Quick Capture</button>
+        <button class="btn" id="btnAdd">Capture + Edit</button>
+        <button class="btn" id="btnExport">Export CSV</button>
+        <button class="btn primary" id="btnRedeem">Redeem</button>
+        <button class="btn" id="btnClear">Clear Data</button> <!-- دکمه جدید برای پاک کردن داده‌ها -->
+      </div>
+
+      <div class="feed" id="feed"></div>
+
+      <div style="margin-top:8px">
+        <div class="small">Tip: keep captures under 100 characters. The system rewards quality; use Capture+Edit when you want more OP.</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="hint">Local-only. No signup. Your data stays in this browser.</div>
+      <div style="color: var(--muted); font-size: var(--font-size-medium)">Version • MoodOrb v1</div>
+    </div>
+  </article>
+</main>
+
+<!-- Modal for edit -->
+<div id="modal" style="display:none" class="modal-back" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-weight:700; color:#eaf1f6">Capture Outcome</div>
+      <button id="modalClose" class="btn" style="background:transparent; border:none; color:var(--muted);">✕</button>
+    </div>
+    <div style="margin-top:8px">
+      <input id="modalTag" placeholder="Tags (comma) e.g. EN,BLB" />
+      <textarea id="modalText" rows="3" placeholder="Describe the output (one line)..."></textarea>
+      <div style="display:flex; gap:8px; margin-top:8px; align-items:center;">
+        <label style="color:var(--muted); font-size: var(--font-size-medium)">Quality</label>
+        <select id="modalQuality" style="padding:8px; background:transparent; color:#eaf1f6; border-radius:8px; border:1px solid rgba(255,255,255,0.04)">
+          <option value="0">Quick (0)</option>
+          <option value="0.5">OK (0.5)</option>
+          <option value="1">Good (1)</option>
+          <option value="2">Polished (2)</option>
+        </select>
+        <div style="flex:1"></div>
+        <button id="modalSave" class="btn primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Mood Orb — Minimal but grown-up OOD capture
+   - LocalStorage only
+   - Quick capture (one click) OR capture+edit (modal)
+   - OP calculation: base 1 + quality (0..2) + streakBonus (if consecutive)
+   - Streak: consecutive days with at least one capture
+   - Simple redeem: demo subtract OP and add redeem log
+*/
+
+const LS_KEY = 'ood_moodorb_v1';
+const REDEEM_KEY = 'ood_moodorb_redeems';
+
+let totalScore = 0; // متغیر جدید برای نگهداری امتیاز کل
+
+function todayISO(offset = 0) {
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  return d.toISOString().slice(0, 10);
+}
+
+function loadData() {
+  try {
+    return JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+  } catch (e) {
+    return [];
+  }
+}
+function saveData(arr) { localStorage.setItem(LS_KEY, JSON.stringify(arr)); }
+
+function loadRedeems() {
+  try {
+    return JSON.parse(localStorage.getItem(REDEEM_KEY) || '[]');
+  } catch (e) {
+    return [];
+  }
+}
+function saveRedeems(a) { localStorage.setItem(REDEEM_KEY, JSON.stringify(a)); }
+
+let oods = loadData(); // array of {id, date, text, tags, quality, op}
+const opEl = document.getElementById('opCount');
+const streakEl = document.getElementById('streakCount');
+const feedEl = document.getElementById('feed');
+const levelBadge = document.getElementById('levelBadge');
+const totalScoreEl = document.getElementById('totalScore'); // عنصر نمایش امتیاز کل
+
+function calcTotals(list) {
+  const total = list.reduce((s, x) => s + (Number(x.op) || 0), 0);
+  const streak = calcStreak(list);
+  return { total: Math.round(total * 100) / 100, streak };
+}
+
+function calcStreak(list) {
+  if (!list || list.length === 0) return 0;
+  const dates = Array.from(new Set(list.map(x => x.date))).sort().reverse();
+  let count = 0;
+  let cur = todayISO(0);
+  for (let d of dates) {
+    if (d === cur) { count++; cur = prevISO(cur); }
+    else if (d < cur) break;
+  }
+  return count;
+}
+function prevISO(iso) { 
+  const d = new Date(iso); 
+  d.setDate(d.getDate() - 1); 
+  return d.toISOString().slice(0, 10); 
+}
+
+function regenUI() {
+  // totals
+  const totals = calcTotals(oods);
+  opEl.textContent = totals.total;
+  streakEl.textContent = totals.streak;
+  const rank = rankName(totals.total);
+  levelBadge.textContent = 'Rank: ' + rank;
+  
+  // feed
+  feedEl.innerHTML = '';
+  if (oods.length === 0) {
+    feedEl.innerHTML = `<div class="entry"><div class="entry-left"><div class="entry-text">No outcomes yet</div><div class="entry-date small">Capture one with the orb.</div></div></div>`;
+    return;
+  }
+  for (let it of oods.slice(0, 50)) {
+    const div = document.createElement('div'); 
+    div.className = 'entry';
+    const left = document.createElement('div'); 
+    left.className = 'entry-left';
+    const right = document.createElement('div'); 
+    right.className = 'entry-right';
+    left.innerHTML = `<div class="entry-date">${it.date} • ${(it.tags || []).join(', ')}</div><div class="entry-text">${escapeHtml(it.text)}</div>`;
+    right.innerHTML = `<div>OP ${it.op > 0 ? ('+' + it.op) : it.op}</div><div style="margin-top:6px;color:var(--muted);font-size:var(--font-size-small)">Q:${it.quality || 0}</div>`;
+    div.appendChild(left); div.appendChild(right);
+    feedEl.appendChild(div);
+  }
+
+  // به‌روزرسانی امتیاز کل
+  totalScoreEl.textContent = totalScore;
+}
+
+function rankName(total) {
+  if (total >= 200) return 'Architect';
+  if (total >= 80) return 'Commander';
+  if (total >= 30) return 'Operator';
+  return 'Initiate';
+}
+
+function escapeHtml(s) { 
+  return (s + '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); 
+}
+
+/* OP calc:
+   base 1, +quality(0..2), +attachment absent (not used now), streakBonus (if yesterday present)
+*/
+function calcOP(quality, hasAttachment) {
+  const base = 1;
+  const q = Number(quality) || 0;
+  const yesterday = todayISO(-1);
+  const hasY = oods.some(o => o.date === yesterday);
+  const streakBonus = hasY ? 0.5 : 0;
+  return Math.round((base + q + streakBonus) * 100) / 100;
+}
+
+function addOOD(text, tags = [], quality = 0) {
+  const d = todayISO(0);
+  // allow multiple per day; but OP awarded per-entry
+  const op = calcOP(quality, false);
+  const entry = { id: 'o' + Date.now().toString(36), date: d, text: text, tags: tags, quality: quality, op: op };
+  oods.unshift(entry);
+  saveData(oods);
+  regenUI();
+  confettiBurst();
+}
+
+function quickCapture() {
+  // quick mode: auto-text based on small heuristics + single op
+  const shortHints = [
+    'Quick win: wrote 2 lines in English diary',
+    'Quick win: added one expression to EN bank',
+    'Quick win: cleaned desk for focus',
+    'Quick win: created a tiny concept in BLB',
+    'Quick win: did 20m concentrated research'
+  ];
+  const text = shortHints[Math.floor(Math.random() * shortHints.length)];
+  addOOD(text, ['quick'], 0);
+  
+  // افزایش امتیاز به ازای هر کلیک
+  totalScore += 10; // 10 OP به امتیاز کل اضافه می‌شود
+  regenUI(); // به‌روزرسانی رابط کاربری برای نمایش امتیاز جدید
+
+  flashOrb();
+}
+
+function captureWithEdit() {
+  // open modal
+  showModal();
+}
+
+function exportCSV() {
+  const header = ['id', 'date', 'text', 'tags', 'quality', 'op'];
+  const rows = oods.map(o => [o.id, o.date, o.text, (o.tags || []).join('|'), o.quality || 0, o.op || 0]);
+  const csv = [header.join(','), ...rows.map(r => r.map(c => '"' + (('' + c).replace(/"/g, '""')) + '"').join(','))].join('\\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'oodbox_export.csv'; a.click(); URL.revokeObjectURL(url);
+}
+
+/* Redeem demo: subtract OP and add redeem entry */
+function redeemDemo() {
+  const totals = calcTotals(oods);
+  if (totals.total < 20) { alert('You need 20 OP to redeem a Deep Work Day.'); return; }
+  if (!confirm('Redeem 20 OP for a "Deep Work Day"? (This will subtract 20 OP from total)')) return;
+  const d = todayISO(0);
+  const entry = { id: 'r' + Date.now().toString(36), date: d, text: 'REDEEM: Deep Work Day', tags: ['redeem'], quality: 0, op: -20 };
+  oods.unshift(entry);
+  saveData(oods);
+  saveRedeems([...loadRedeems(), { date: d, item: 'Deep Work Day', cost: 20 }]);
+  regenUI();
+}
+
+/* UI hooks */
+document.getElementById('btnQuick').addEventListener('click', quickCapture);
+document.getElementById('btnAdd').addEventListener('click', captureWithEdit);
+document.getElementById('btnExport').addEventListener('click', exportCSV);
+document.getElementById('btnRedeem').addEventListener('click', redeemDemo);
+
+// تابع جدید برای پاک کردن داده‌ها
+function clearData() {
+  if (confirm('آیا مطمئن هستید که می‌خواهید تمام داده‌ها را پاک کنید؟')) {
+    localStorage.removeItem(LS_KEY);
+    localStorage.removeItem(REDEEM_KEY);
+    oods = []; // آرایه داده‌ها را خالی می‌کنیم
+    totalScore = 0; // ریست کردن امتیاز کل
+    regenUI(); // رابط کاربری را به‌روزرسانی می‌کنیم
+  }
+}
+
+// افزودن رویداد برای دکمه پاک کردن داده‌ها
+document.getElementById('btnClear').addEventListener('click', clearData);
+
+const orb = document.getElementById('orbButton');
+const orbInner = document.getElementById('orbInner');
+
+orb.addEventListener('click', () => {
+  // single click => quick capture
+  quickCapture();
+});
+
+// long-press to open edit (for touch)
+let holdTimer = null;
+orb.addEventListener('pointerdown', (e) => {
+  holdTimer = setTimeout(() => {
+    showModal();
+  }, 380);
+});
+orb.addEventListener('pointerup', () => {
+  if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
+});
+orb.addEventListener('pointerleave', () => { if (holdTimer) clearTimeout(holdTimer); holdTimer = null; });
+
+/* modal logic */
+const modal = document.getElementById('modal');
+const modalText = document.getElementById('modalText');
+const modalTag = document.getElementById('modalTag');
+const modalQuality = document.getElementById('modalQuality');
+document.getElementById('modalClose').addEventListener('click', () => hideModal());
+document.getElementById('modalSave').addEventListener('click', () => {
+  const t = modalText.value.trim();
+  const tags = modalTag.value.split(',').map(s => s.trim()).filter(Boolean);
+  const q = Number(modalQuality.value) || 0;
+  if (!t) { alert('Write a short outcome.'); return; }
+  addOOD(t, tags, q);
+  hideModal();
+});
+
+function showModal() {
+  modal.style.display = 'flex'; modal.setAttribute('aria-hidden', 'false');
+  modalText.value = ''; modalTag.value = ''; modalQuality.value = '0';
+  setTimeout(() => modalText.focus(), 120);
+}
+function hideModal() { modal.style.display = 'none'; modal.setAttribute('aria-hidden', 'true'); }
+
+/* confetti simple */
+function confettiBurst() {
+  const wrap = document.getElementById('confettiWrap');
+  const c = document.createElement('canvas'); c.width = wrap.clientWidth; c.height = wrap.clientHeight; c.style.position = 'absolute'; c.style.left = '0'; c.style.top = '0';
+  wrap.appendChild(c);
+  const ctx = c.getContext('2d');
+  const parts = [];
+  for (let i = 0; i < 30; i++) {
+    parts.push({
+      x: c.width / 2 + (Math.random() - 0.5) * 40,
+      y: c.height / 2 + (Math.random() - 0.5) * 40,
+      vx: (Math.random() - 0.5) * 6,
+      vy: -Math.random() * 6 - 2,
+      r: 4 + Math.random() * 6,
+      color: (Math.random() > 0.5 ? '#c9a34a' : '#6ad3ff'),
+      life: 60 + Math.random() * 40
+    });
+  }
+  let t = 0;
+  const id = setInterval(() => {
+    t++;
+    ctx.clearRect(0, 0, c.width, c.height);
+    for (let p of parts) {
+      p.x += p.vx; p.y += p.vy; p.vy += 0.18; p.life--;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.ellipse(p.x, p.y, p.r, p.r, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    if (t > 120) { clearInterval(id); wrap.removeChild(c); }
+  }, 16);
+}
+
+/* visual flash on quick */
+function flashOrb() {
+  orb.style.transform = 'scale(0.96)';
+  orb.style.boxShadow = '0 12px 48px rgba(106, 211, 255, 0.08)';
+  setTimeout(() => { orb.style.transform = ''; orb.style.boxShadow = ''; }, 260);
+}
+
+/* init */
+regenUI();
+
+/* accessibility: keyboard quick */
+document.addEventListener('keydown', (e) => {
+  if (e.key === ' ') { e.preventDefault(); quickCapture(); }
+  if (e.key === 'Enter') { captureWithEdit(); }
+});
+</script>
+</body>
+</html>
