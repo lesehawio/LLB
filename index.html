@@ -8,13 +8,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #f7f8fa;
-      --text: #1f1f1f;
-      --primary: #05344E;
-      --accent: #facc15;
-      --card: #ffffff;
-      --border: #d0d7df;
-      --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      --bg: #0b0f14;
+      --text: #e6eef6;
+      --primary: #c9a34a;
+      --accent: #6ad3ff;
+      --card: #ffffff; /* تغییر رنگ باکس به سفید */
+      --border: #374151;
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     }
 
     * {
@@ -59,7 +59,7 @@
 
     p.subtitle {
       font-size: 1rem;
-      color: #555;
+      color: var(--accent);
       margin-bottom: 2rem;
     }
 
@@ -81,11 +81,17 @@
       font-size: 1rem;
       transition: all 0.25s ease;
       cursor: pointer;
+      position: relative;
     }
 
     .menu a:hover {
       background-color: var(--primary);
       color: white;
+    }
+
+    .menu a:active {
+      transform: scale(0.95);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
     .footer {
@@ -105,6 +111,7 @@
       <a href="method.html">شیوه‌ی یادگیری (فلسفه + رویکرد)</a>
       <a href="sections.html">بخش‌های کاربردی برای یادگیری زبان</a>
       <a href="tools.html">ابزارهای پیشنهادی</a>
+      <a href="mood.html">گوی خلق و خو</a> <!-- دکمه جدید اضافه شده -->
     </div>
     <div class="footer">
       © 2025 LLB – Designed for independent language learners.
